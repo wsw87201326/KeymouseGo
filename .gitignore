@@ -29,6 +29,10 @@ var/
 *.manifest
 *.spec
 
+# Python 3.14 构建产物（见 build_windows.ps1）
+.venv*/
+vendor_wheels/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

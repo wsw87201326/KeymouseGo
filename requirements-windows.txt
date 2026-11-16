@@ -1,10 +1,29 @@
-# Python3.10
+# KeymouseGo 运行时依赖 —— Windows / Python 3.14 / x64
+#
+# 上游原版锁的是 Python 3.10 + PySide6 6.5.3，这一组在 3.14 上装不上：
+#   - PySide6 6.5.3 的 requires-python 是 <3.12，pip 直接拒装
+#   - pywin32 302 没有 cp314 轮子
+#   - qt-material 2.11 / pyperclip 1.8.0 都是配套那一代的版本
+# 下面这组是按 3.14 重新对齐并实测通过的版本。
+#
+# 安装：pip install -r requirements-windows.txt
+#
+# pyWinhook 不在列表里：它在 3.14 上没有轮子，必须从打了补丁的源码编译，
+# 由 build_windows.ps1 自动完成（原因见 vendor/pyWinhook-1.6.2/PATCHES.md）。
 
-pywin32==302
-pyWinhook==1.6.2
-pyperclip==1.8.0
-future==0.18.3
-PySide6==6.5.3
-qt-material==2.11
-loguru==0.6.0
+pywin32==312
+pyperclip==1.11.0
+
+# 用 Essentials + Addons 拆分装，而不是 PySide6 元包：
+# 元包会顺带拖 250MB 的 WebEngine，这个项目一个 import 都没有。
+# 但 QtMultimedia 不能省 —— UIFunc.py 用 QSoundEffect 播提示音，
+# 而它在 Qt6 里属于 Addons 而不是 Essentials。
+PySide6-Essentials==6.12.0
+PySide6-Addons==6.12.0
+
+qt-material==2.17
+loguru==0.7.3
 json5==0.9.10
+
+# 相比上游去掉了 future==0.18.3：全项目没有任何 builtins / past / libfuturize
+# 的引用，它从来就没被真正用到过，只是挂在 requirements 里。
